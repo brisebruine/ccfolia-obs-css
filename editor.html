@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCFOLIA OBS CSS Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Zen+Old+Mincho:wght@400;700&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-panel: #110e1a;
+    --bg-card: #1a1528;
+    --bg-input: #0f0d18;
+    --border-subtle: rgba(139,92,246,0.15);
+    --border-glow: rgba(139,92,246,0.4);
+    --accent: #8b5cf6;
+    --accent-dark: #7c3aed;
+    --text-primary: #e2d9f3;
+    --text-secondary: #9d8ec4;
+    --text-muted: #5a4f72;
+    --glow-sm: 0 0 8px rgba(139,92,246,0.3);
+    --glow-md: 0 0 20px rgba(139,92,246,0.2);
+    --tr: all 0.2s ease;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  #topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0; gap: 12px;
+  }
+  .logo { font-family: 'Kaisei Opti', serif; font-size: 14px; letter-spacing: 0.08em; color: var(--accent); text-shadow: var(--glow-sm); white-space: nowrap; }
+  .logo span { color: var(--text-muted); font-size: 11px; margin-left: 6px; }
+
+  .tab-bar { display: flex; gap: 3px; flex: 1; justify-content: center; }
+  .tab-btn {
+    background: transparent; border: 1px solid transparent;
+    color: var(--text-muted); font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; padding: 5px 16px; border-radius: 5px; cursor: pointer; transition: var(--tr); white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text-secondary); border-color: var(--border-subtle); }
+  .tab-btn.active { background: rgba(139,92,246,0.18); border-color: var(--border-glow); color: var(--accent); text-shadow: var(--glow-sm); }
+
+  #lang-toggle {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 11px; padding: 4px 10px;
+    border-radius: 4px; cursor: pointer; transition: var(--tr); white-space: nowrap;
+  }
+  #lang-toggle:hover { border-color: var(--border-glow); color: var(--accent); }
+
+  /* ── NOTICE BAR ── */
+  #notice-bar {
+    background: rgba(139,92,246,0.08);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 5px 18px;
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  #notice-bar code {
+    background: rgba(139,92,246,0.15);
+    border-radius: 3px; padding: 1px 5px;
+    color: var(--accent); font-size: 10px;
+  }
+
+  /* ── MAIN ── */
+  #main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── LEFT PANEL ── */
+  #left-panel {
+    width: 296px; flex-shrink: 0;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-subtle);
+    overflow-y: auto; overflow-x: hidden;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  #left-panel::-webkit-scrollbar { width: 3px; }
+  #left-panel::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+
+  .sec { font-size: 10px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; padding: 6px 2px 3px; border-bottom: 1px solid var(--border-subtle); margin-top: 2px; }
+
+  .ctrl { display: flex; align-items: center; gap: 6px; padding: 2px 2px; }
+  .ctrl-label { flex: 1; font-size: 11px; color: var(--text-secondary); min-width: 0; }
+  .ctrl-val { font-size: 10px; color: var(--accent); min-width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  input[type=range] {
+    -webkit-appearance: none; width: 88px; height: 3px;
+    background: linear-gradient(90deg, var(--accent) var(--pct,50%), rgba(139,92,246,0.2) var(--pct,50%));
+    border-radius: 2px; outline: none; cursor: pointer; flex-shrink: 0;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--accent); box-shadow: var(--glow-sm); cursor: pointer;
+  }
+  input[type=color] {
+    -webkit-appearance: none; width: 26px; height: 20px;
+    border: 1px solid var(--border-subtle); border-radius: 3px;
+    background: none; cursor: pointer; padding: 1px; flex-shrink: 0;
+  }
+  input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type=color]::-webkit-color-swatch { border: none; border-radius: 2px; }
+  select {
+    background: var(--bg-input); border: 1px solid var(--border-subtle);
+    color: var(--text-primary); font-size: 11px; padding: 2px 5px;
+    border-radius: 3px; cursor: pointer; outline: none; width: 128px; flex-shrink: 0;
+  }
+  select:focus { border-color: var(--border-glow); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: contents; }
+
+  /* ── RIGHT PANEL ── */
+  #right-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-deep); }
+
+  .prev-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px; background: var(--bg-panel);
+    border-bottom: 1px solid var(--border-subtle); flex-shrink: 0;
+  }
+  .prev-toolbar span { font-size: 11px; color: var(--text-muted); }
+  .prev-bg-btn {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 10px; padding: 3px 9px;
+    border-radius: 3px; cursor: pointer; transition: var(--tr);
+  }
+  .prev-bg-btn.active, .prev-bg-btn:hover { border-color: var(--border-glow); color: var(--accent); }
+
+  #preview-area {
+    flex: 1; overflow: auto; display: flex;
+    align-items: flex-end; justify-content: center;
+    padding: 20px; transition: background 0.3s;
+  }
+  #preview-area.bg-dark  { background: #1a1a2e; }
+  #preview-area.bg-mid   { background: #2d2d44; }
+  #preview-area.bg-light { background: #c0c0d0; }
+  #preview-area.bg-green { background: #00b140; }
+  #preview-area::-webkit-scrollbar { width: 4px; }
+  #preview-area::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+
+  /* ── OUTPUT BAR ── */
+  #output-bar {
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-panel); padding: 8px 14px;
+    flex-shrink: 0; display: flex; align-items: center; gap: 8px;
+  }
+  #css-output {
+    flex: 1; background: var(--bg-input); border: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 10px; font-family: 'Courier New', monospace;
+    padding: 5px 8px; border-radius: 4px; height: 38px; resize: none; outline: none; overflow: hidden;
+  }
+  #copy-btn {
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+    border: none; color: #fff; font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; padding: 7px 18px; border-radius: 5px; cursor: pointer;
+    box-shadow: var(--glow-sm); transition: var(--tr); white-space: nowrap; flex-shrink: 0;
+  }
+  #copy-btn:hover { box-shadow: var(--glow-md); transform: translateY(-1px); }
+  #copy-btn.copied { background: linear-gradient(135deg, #059669, #10b981); }
+
+  /* ════════════ PREVIEW COMPONENTS ════════════ */
+
+  /* Chat */
+  #chat-preview { display: flex; flex-direction: column; gap: 8px; width: 360px; max-width: 100%; }
+  .p-chat-msg {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 10px;
+    background: rgba(10,8,16,0.85);
+    border: 2px solid transparent;
+    animation: p-slide 0.5s ease both;
+  }
+  @keyframes p-slide { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .p-chat-av { width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; background:linear-gradient(135deg,#1e1b4b,#312e81); }
+  .p-chat-name { font-size:12px; font-weight:600; margin-bottom:2px; }
+  .p-chat-text { font-size:13px; line-height:1.6; }
+  .p-dice { font-size:11px; padding:2px 7px; border-radius:3px; display:inline-block; margin-top:3px; }
+
+  /* Fuki */
+  #fuki-preview { display: flex; flex-direction: column; gap: 12px; width: 400px; max-width: 100%; }
+  .p-fuki-row { display:flex; align-items:flex-end; gap:8px; }
+  .p-fuki-av { width:48px; height:48px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; background:linear-gradient(135deg,#1e1b4b,#312e81); border:2px solid rgba(139,92,246,0.4); }
+  .p-fuki-inner { max-width:280px; }
+  .p-fuki-name { font-size:11px; margin-bottom:3px; opacity:0.8; }
+  .p-fuki-bubble { padding:8px 13px; border-radius:4px 14px 14px 14px; font-size:13px; line-height:1.6; border:1.5px solid rgba(139,92,246,0.7); background:rgba(20,15,40,0.88); }
+
+  /* Status */
+  #status-preview { display:flex; flex-direction:column; gap:6px; width:300px; max-width:100%; }
+  .p-st-card { border-radius:10px; padding:10px 12px; border:1px solid rgba(139,92,246,0.3); background:rgba(10,8,22,0.88); }
+  .p-st-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .p-st-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid rgba(139,92,246,0.5); flex-shrink:0; }
+  .p-st-name { font-size:14px; font-weight:600; color:#c4b5fd; }
+  .p-st-sub  { font-size:10px; opacity:0.5; margin-top:1px; }
+  .p-st-row  { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+  .p-st-lbl  { font-size:10px; width:26px; text-align:right; opacity:0.7; flex-shrink:0; }
+  .p-st-track { flex:1; height:8px; border-radius:4px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .p-st-fill  { height:100%; border-radius:4px; }
+  .p-st-val   { font-size:10px; min-width:38px; text-align:right; opacity:0.65; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">CCFOLIA <span data-i18n="logo-sub">OBS CSS Editor</span></div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="chat"   data-i18n="tab-chat">ルームチャット</button>
+    <button class="tab-btn"        data-tab="fuki"   data-i18n="tab-fuki">吹き出し</button>
+    <button class="tab-btn"        data-tab="status" data-i18n="tab-status">ステータス</button>
+  </div>
+  <button id="lang-toggle">中文</button>
+</div>
+
+<!-- NOTICE -->
+<div id="notice-bar">
+  <span data-i18n="notice-prefix">GitHubのURL：</span>
+  <code id="notice-url">https://YOUR_NAME.github.io/YOUR_REPO/css/chat.css</code>
+  <span data-i18n="notice-suffix">　→ OBSのカスタムCSSに貼る @import を含めて生成します</span>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEFT -->
+  <div id="left-panel">
+
+    <!-- ══ CHAT ══ -->
+    <div class="tab-panel active" data-panel="chat">
+
+      <div class="sec" data-i18n="s-repo">GitHub URL</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-repo-url">リポジトリURL</span>
+        <input type="text" id="chat-repo" value="https://YOUR_NAME.github.io/YOUR_REPO" style="background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:10px;padding:3px 6px;border-radius:3px;outline:none;width:168px;flex-shrink:0;">
+      </div>
+
+      <div class="sec" data-i18n="s-bg">背景</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bg-color">背景色</span>
+        <input type="color" id="chat-bg-color" value="#0a0810">
+        <span class="ctrl-val" id="chat-bg-color-v">#0a0810</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bg-alpha">透明度</span>
+        <input type="range" id="chat-bg-alpha" min="0" max="100" value="85">
+        <span class="ctrl-val" id="chat-bg-alpha-v">85%</span>
+      </div>
+
+      <div class="sec" data-i18n="s-border">外框</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-g1">漸変色 ①②③</span>
+        <input type="color" id="chat-g1" value="#8b5cf6">
+        <input type="color" id="chat-g2" value="#06b6d4">
+        <input type="color" id="chat-g3" value="#f43f5e">
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-grad-angle">角度</span>
+        <input type="range" id="chat-grad-angle" min="0" max="360" value="90">
+        <span class="ctrl-val" id="chat-grad-angle-v">90°</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-border-w">外框幅</span>
+        <input type="range" id="chat-border-w" min="0" max="4" step="0.5" value="2">
+        <span class="ctrl-val" id="chat-border-w-v">2px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-radius">圓角</span>
+        <input type="range" id="chat-radius" min="0" max="24" value="10">
+        <span class="ctrl-val" id="chat-radius-v">10px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-text">文字</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-font">字体</span>
+        <select id="chat-font">
+          <option value="'Kaisei Opti', serif">Kaisei Opti</option>
+          <option value="'Shippori Mincho', serif">Shippori Mincho</option>
+          <option value="'Zen Old Mincho', serif" selected>Zen Old Mincho</option>
+          <option value="'Noto Serif JP', serif">Noto Serif JP</option>
+          <option value="'Noto Serif TC', serif">Noto Serif TC</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-text-color">本文色</span>
+        <input type="color" id="chat-text-color" value="#ffffff">
+        <span class="ctrl-val" id="chat-text-color-v">#ffffff</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-text-size">本文サイズ</span>
+        <input type="range" id="chat-text-size" min="10" max="24" value="18">
+        <span class="ctrl-val" id="chat-text-size-v">18px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-name-color">名前色</span>
+        <input type="color" id="chat-name-color" value="#ffffff">
+        <span class="ctrl-val" id="chat-name-color-v">#ffffff</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-name-size">名前サイズ</span>
+        <input type="range" id="chat-name-size" min="9" max="20" value="16">
+        <span class="ctrl-val" id="chat-name-size-v">16px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-success">成功色</span>
+        <input type="color" id="chat-success" value="#86caff">
+        <span class="ctrl-val" id="chat-success-v">#86caff</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-fail">失敗色</span>
+        <input type="color" id="chat-fail" value="#ffa1a1">
+        <span class="ctrl-val" id="chat-fail-v">#ffa1a1</span>
+      </div>
+
+      <div class="sec" data-i18n="s-icon">アイコン</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-icon-size">サイズ</span>
+        <input type="range" id="chat-icon-sz" min="24" max="72" value="36">
+        <span class="ctrl-val" id="chat-icon-sz-v">36px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-icon-shape">形状</span>
+        <select id="chat-icon-shape">
+          <option value="50%" selected data-i18n="shape-circle">円形</option>
+          <option value="8px" data-i18n="shape-rounded">丸角方形</option>
+          <option value="0%" data-i18n="shape-square">正方形</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-icon-margin">アイコン右余白</span>
+        <input type="range" id="chat-icon-mr" min="0" max="20" value="8">
+        <span class="ctrl-val" id="chat-icon-mr-v">8px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-layout">レイアウト</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-gap">カード間隔</span>
+        <input type="range" id="chat-gap" min="0" max="20" value="4">
+        <span class="ctrl-val" id="chat-gap-v">4px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-show">表示件数</span>
+        <input type="range" id="chat-show" min="1" max="20" value="3">
+        <span class="ctrl-val" id="chat-show-v">3件</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-anim">アニメ時間</span>
+        <input type="range" id="chat-anim" min="2" max="60" value="8">
+        <span class="ctrl-val" id="chat-anim-v">8s</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-fadeout">表示継続(s)</span>
+        <input type="range" id="chat-fadeout" min="2" max="60" value="5">
+        <span class="ctrl-val" id="chat-fadeout-v">5s</span>
+      </div>
+
+    </div><!-- /chat -->
+
+    <!-- ══ FUKI ══ -->
+    <div class="tab-panel" data-panel="fuki">
+
+      <div class="sec">GitHub URL</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-repo-url">リポジトリURL</span>
+        <input type="text" id="fuki-repo" value="https://YOUR_NAME.github.io/YOUR_REPO" style="background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:10px;padding:3px 6px;border-radius:3px;outline:none;width:168px;flex-shrink:0;">
+      </div>
+
+      <div class="sec" data-i18n="s-preset">スタイルプリセット</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-preset">プリセット</span>
+        <select id="fuki-preset">
+          <option value="dark"  data-i18n="ps-dark">暗色神秘</option>
+          <option value="light" data-i18n="ps-light">明るいシンプル</option>
+          <option value="paper" data-i18n="ps-paper">ペーパー</option>
+          <option value="neon"  data-i18n="ps-neon">ネオン</option>
+        </select>
+      </div>
+
+      <div class="sec" data-i18n="s-icon">アイコン</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-icon-size">サイズ</span>
+        <input type="range" id="fuki-icon-sz" min="32" max="96" value="56">
+        <span class="ctrl-val" id="fuki-icon-sz-v">56px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-bubble">吹き出し</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bubble-color">泡泡色</span>
+        <input type="color" id="fuki-bubble-color" value="#14092a">
+        <span class="ctrl-val" id="fuki-bubble-color-v">#14092a</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-border-color">外框色</span>
+        <input type="color" id="fuki-border-color" value="#8b5cf6">
+        <span class="ctrl-val" id="fuki-border-color-v">#8b5cf6</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-border-w">外框幅</span>
+        <input type="range" id="fuki-border-w" min="0" max="4" step="0.5" value="1.5">
+        <span class="ctrl-val" id="fuki-border-w-v">1.5px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-radius">圓角</span>
+        <input type="range" id="fuki-radius" min="0" max="24" value="14">
+        <span class="ctrl-val" id="fuki-radius-v">14px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bubble-maxw">最大幅</span>
+        <input type="range" id="fuki-maxw" min="160" max="500" step="10" value="340">
+        <span class="ctrl-val" id="fuki-maxw-v">340px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-text">文字</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-font">字体</span>
+        <select id="fuki-font">
+          <option value="'Kaisei Opti', serif">Kaisei Opti</option>
+          <option value="'Shippori Mincho', serif" selected>Shippori Mincho</option>
+          <option value="'Zen Old Mincho', serif">Zen Old Mincho</option>
+          <option value="'Noto Serif JP', serif">Noto Serif JP</option>
+          <option value="'Noto Serif TC', serif">Noto Serif TC</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-name-color">名前色</span>
+        <input type="color" id="fuki-name-color" value="#a78bfa">
+        <span class="ctrl-val" id="fuki-name-color-v">#a78bfa</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-text-color">本文色</span>
+        <input type="color" id="fuki-body-color" value="#e2d9f3">
+        <span class="ctrl-val" id="fuki-body-color-v">#e2d9f3</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-text-size">本文サイズ</span>
+        <input type="range" id="fuki-body-sz" min="10" max="24" value="16">
+        <span class="ctrl-val" id="fuki-body-sz-v">16px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-anim">アニメーション</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-anim-dur">時間</span>
+        <input type="range" id="fuki-anim" min="100" max="2000" step="100" value="400">
+        <span class="ctrl-val" id="fuki-anim-v">0.4s</span>
+      </div>
+
+    </div><!-- /fuki -->
+
+    <!-- ══ STATUS ══ -->
+    <div class="tab-panel" data-panel="status">
+
+      <div class="sec">GitHub URL</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-repo-url">リポジトリURL</span>
+        <input type="text" id="st-repo" value="https://YOUR_NAME.github.io/YOUR_REPO" style="background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:10px;padding:3px 6px;border-radius:3px;outline:none;width:168px;flex-shrink:0;">
+      </div>
+
+      <div class="sec" data-i18n="s-card">カード</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bg-color">背景色</span>
+        <input type="color" id="st-bg" value="#0a0816">
+        <span class="ctrl-val" id="st-bg-v">#0a0816</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bg-alpha">透明度</span>
+        <input type="range" id="st-bg-alpha" min="0" max="100" value="88">
+        <span class="ctrl-val" id="st-bg-alpha-v">88%</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-border-color">外框色</span>
+        <input type="color" id="st-border" value="#8b5cf6">
+        <span class="ctrl-val" id="st-border-v">#8b5cf6</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-border-alpha">外框透明度</span>
+        <input type="range" id="st-border-alpha" min="0" max="100" value="40">
+        <span class="ctrl-val" id="st-border-alpha-v">40%</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-radius">圓角</span>
+        <input type="range" id="st-radius" min="0" max="20" value="10">
+        <span class="ctrl-val" id="st-radius-v">10px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-avatar">アバター</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-avatar-sz">サイズ</span>
+        <input type="range" id="st-av-sz" min="28" max="64" value="44">
+        <span class="ctrl-val" id="st-av-sz-v">44px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-text">文字</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-font">字体</span>
+        <select id="st-font">
+          <option value="'Kaisei Opti', serif" selected>Kaisei Opti</option>
+          <option value="'Shippori Mincho', serif">Shippori Mincho</option>
+          <option value="'Zen Old Mincho', serif">Zen Old Mincho</option>
+          <option value="'Noto Serif JP', serif">Noto Serif JP</option>
+          <option value="'Noto Serif TC', serif">Noto Serif TC</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-name-color">名前色</span>
+        <input type="color" id="st-name-color" value="#c4b5fd">
+        <span class="ctrl-val" id="st-name-color-v">#c4b5fd</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-name-size">名前サイズ</span>
+        <input type="range" id="st-name-sz" min="10" max="22" value="15">
+        <span class="ctrl-val" id="st-name-sz-v">15px</span>
+      </div>
+
+      <div class="sec" data-i18n="s-bar">ステータスバー</div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar-h">高さ</span>
+        <input type="range" id="st-bar-h" min="4" max="16" value="8">
+        <span class="ctrl-val" id="st-bar-h-v">8px</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar1">バー色①(HP)</span>
+        <input type="color" id="st-c1" value="#34d399">
+        <span class="ctrl-val" id="st-c1-v">#34d399</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar2">バー色②(MP)</span>
+        <input type="color" id="st-c2" value="#60a5fa">
+        <span class="ctrl-val" id="st-c2-v">#60a5fa</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar3">バー色③(SAN)</span>
+        <input type="color" id="st-c3" value="#f59e0b">
+        <span class="ctrl-val" id="st-c3-v">#f59e0b</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar4">バー色④</span>
+        <input type="color" id="st-c4" value="#a78bfa">
+        <span class="ctrl-val" id="st-c4-v">#a78bfa</span>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label" data-i18n="c-bar5">バー色⑤</span>
+        <input type="color" id="st-c5" value="#f472b6">
+        <span class="ctrl-val" id="st-c5-v">#f472b6</span>
+      </div>
+
+    </div><!-- /status -->
+
+  </div><!-- /left-panel -->
+
+  <!-- RIGHT -->
+  <div id="right-panel">
+    <div class="prev-toolbar">
+      <span data-i18n="prev-bg">背景：</span>
+      <button class="prev-bg-btn active" data-bg="bg-dark"  data-i18n="pb-dark">暗</button>
+      <button class="prev-bg-btn"        data-bg="bg-mid"   data-i18n="pb-mid">中</button>
+      <button class="prev-bg-btn"        data-bg="bg-light" data-i18n="pb-light">明</button>
+      <button class="prev-bg-btn"        data-bg="bg-green" data-i18n="pb-green">緑</button>
+    </div>
+
+    <div id="preview-area" class="bg-dark">
+
+      <!-- CHAT PREVIEW -->
+      <div id="chat-preview">
+        <div class="p-chat-msg" id="pc1">
+          <div class="p-chat-av">🔮</div>
+          <div>
+            <div class="p-chat-name" id="pcn1">アリス</div>
+            <div class="p-chat-text" id="pct1">廊下の奥に、かすかな光が見えた。</div>
+          </div>
+        </div>
+        <div class="p-chat-msg" id="pc2">
+          <div class="p-chat-av">⚔️</div>
+          <div>
+            <div class="p-chat-name" id="pcn2">ボブ</div>
+            <div class="p-chat-text">知覚：2d6 → <span class="p-dice" id="pd-s">成功（4）</span></div>
+          </div>
+        </div>
+        <div class="p-chat-msg" id="pc3">
+          <div class="p-chat-av">🌙</div>
+          <div>
+            <div class="p-chat-name" id="pcn3">カロル</div>
+            <div class="p-chat-text">精神：1d20 → <span class="p-dice" id="pd-f">失敗（18）</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FUKI PREVIEW -->
+      <div id="fuki-preview" style="display:none">
+        <div class="p-fuki-row">
+          <div class="p-fuki-av">🔮</div>
+          <div class="p-fuki-inner">
+            <div class="p-fuki-name" id="pfn1">アリス</div>
+            <div class="p-fuki-bubble" id="pfb1">廊下の先に何かいるわ。近づいてみましょう。</div>
+          </div>
+        </div>
+        <div class="p-fuki-row">
+          <div class="p-fuki-av">⚔️</div>
+          <div class="p-fuki-inner">
+            <div class="p-fuki-name" id="pfn2">ボブ</div>
+            <div class="p-fuki-bubble" id="pfb2">俺が先に行く。構えておけ。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS PREVIEW -->
+      <div id="status-preview" style="display:none">
+        <div class="p-st-card" id="psc1">
+          <div class="p-st-header">
+            <div class="p-st-av">🔮</div>
+            <div>
+              <div class="p-st-name" id="psn1">アリス</div>
+              <div class="p-st-sub">探偵</div>
+            </div>
+          </div>
+          <div class="p-st-row"><span class="p-st-lbl">HP</span><div class="p-st-track"><div class="p-st-fill" id="psf1" style="width:72%"></div></div><span class="p-st-val">9/12</span></div>
+          <div class="p-st-row"><span class="p-st-lbl">MP</span><div class="p-st-track"><div class="p-st-fill" id="psf2" style="width:55%"></div></div><span class="p-st-val">6/11</span></div>
+          <div class="p-st-row"><span class="p-st-lbl">SAN</span><div class="p-st-track"><div class="p-st-fill" id="psf3" style="width:40%"></div></div><span class="p-st-val">24/60</span></div>
+        </div>
+        <div class="p-st-card" id="psc2">
+          <div class="p-st-header">
+            <div class="p-st-av">⚔️</div>
+            <div>
+              <div class="p-st-name" id="psn2">ボブ</div>
+              <div class="p-st-sub">戦士</div>
+            </div>
+          </div>
+          <div class="p-st-row"><span class="p-st-lbl">HP</span><div class="p-st-track"><div class="p-st-fill" id="psf4" style="width:90%"></div></div><span class="p-st-val">13/15</span></div>
+          <div class="p-st-row"><span class="p-st-lbl">SAN</span><div class="p-st-track"><div class="p-st-fill" id="psf5" style="width:65%"></div></div><span class="p-st-val">46/70</span></div>
+        </div>
+      </div>
+
+    </div><!-- /preview-area -->
+
+    <div id="output-bar">
+      <textarea id="css-output" readonly></textarea>
+      <button id="copy-btn" data-i18n="btn-copy">コピー</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+/* ── i18n ── */
+const I18N = {
+  ja: {
+    'logo-sub':'OBS CSS Editor','tab-chat':'ルームチャット','tab-fuki':'吹き出し','tab-status':'ステータス',
+    'notice-prefix':'GitHub URL：','notice-suffix':'　→ OBSのカスタムCSSに貼る @import を含めて生成します',
+    's-repo':'GitHub URL','c-repo-url':'リポジトリURL',
+    's-bg':'背景','c-bg-color':'背景色','c-bg-alpha':'透明度',
+    's-border':'外框','c-g1':'漸変色 ①②③','c-grad-angle':'角度','c-border-w':'外框幅','c-radius':'角丸',
+    's-text':'文字','c-font':'字体','c-text-color':'本文色','c-text-size':'本文サイズ',
+    'c-name-color':'名前色','c-name-size':'名前サイズ','c-success':'成功色','c-fail':'失敗色',
+    's-icon':'アイコン','c-icon-size':'サイズ','c-icon-shape':'形状','c-icon-margin':'右余白',
+    'shape-circle':'円形','shape-rounded':'丸角方形','shape-square':'正方形',
+    's-layout':'レイアウト','c-gap':'カード間隔','c-show':'表示件数','c-anim':'アニメ時間','c-fadeout':'表示継続',
+    's-preset':'プリセット','c-preset':'スタイル','ps-dark':'暗色神秘','ps-light':'明るいシンプル','ps-paper':'ペーパー','ps-neon':'ネオン',
+    's-bubble':'吹き出し','c-bubble-color':'泡泡色','c-border-color':'外框色','c-bubble-maxw':'最大幅',
+    'c-text-color':'本文色','c-text-size':'本文サイズ',
+    's-anim':'アニメーション','c-anim-dur':'時間',
+    's-card':'カード','c-border-alpha':'外框透明度',
+    's-avatar':'アバター','c-avatar-sz':'サイズ',
+    's-bar':'ステータスバー','c-bar-h':'高さ','c-bar1':'バー色①(HP)','c-bar2':'バー色②(MP)','c-bar3':'バー色③(SAN)','c-bar4':'バー色④','c-bar5':'バー色⑤',
+    'prev-bg':'背景：','pb-dark':'暗','pb-mid':'中','pb-light':'明','pb-green':'緑',
+    'btn-copy':'コピー',
+  },
+  zh: {
+    'logo-sub':'OBS CSS 編輯器','tab-chat':'聊天紀錄','tab-fuki':'對話泡泡','tab-status':'狀態欄',
+    'notice-prefix':'GitHub URL：','notice-suffix':'　→ 產生含 @import 的 OBS 用自訂 CSS',
+    's-repo':'GitHub URL','c-repo-url':'倉庫 URL',
+    's-bg':'背景','c-bg-color':'背景色','c-bg-alpha':'透明度',
+    's-border':'外框','c-g1':'漸變色 ①②③','c-grad-angle':'角度','c-border-w':'外框寬度','c-radius':'圓角',
+    's-text':'文字','c-font':'字型','c-text-color':'本文色','c-text-size':'本文大小',
+    'c-name-color':'名稱顏色','c-name-size':'名稱大小','c-success':'成功色','c-fail':'失敗色',
+    's-icon':'圖示','c-icon-size':'大小','c-icon-shape':'形狀','c-icon-margin':'右邊距',
+    'shape-circle':'圓形','shape-rounded':'圓角方形','shape-square':'正方形',
+    's-layout':'版面','c-gap':'卡片間距','c-show':'顯示筆數','c-anim':'動畫時間','c-fadeout':'顯示持續',
+    's-preset':'預設樣式','c-preset':'樣式','ps-dark':'暗色神秘','ps-light':'明亮簡約','ps-paper':'紙張','ps-neon':'霓虹',
+    's-bubble':'泡泡','c-bubble-color':'泡泡色','c-border-color':'外框色','c-bubble-maxw':'最大寬度',
+    's-anim':'動畫','c-anim-dur':'時間',
+    's-card':'卡片','c-border-alpha':'外框透明度',
+    's-avatar':'大頭貼','c-avatar-sz':'大小',
+    's-bar':'狀態條','c-bar-h':'高度','c-bar1':'顏色①(HP)','c-bar2':'顏色②(MP)','c-bar3':'顏色③(SAN)','c-bar4':'顏色④','c-bar5':'顏色⑤',
+    'prev-bg':'背景：','pb-dark':'暗','pb-mid':'中','pb-light':'明','pb-green':'緑幕',
+    'btn-copy':'複製',
+  }
+};
+let lang = 'ja';
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  document.querySelectorAll('option[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  document.getElementById('lang-toggle').textContent = lang === 'ja' ? '中文' : '日本語';
+}
+document.getElementById('lang-toggle').addEventListener('click', () => { lang = lang === 'ja' ? 'zh' : 'ja'; applyLang(); generateCSS(); });
+
+/* ── tab ── */
+let activeTab = 'chat';
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === activeTab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === activeTab));
+    document.getElementById('chat-preview').style.display   = activeTab === 'chat'   ? 'flex' : 'none';
+    document.getElementById('fuki-preview').style.display   = activeTab === 'fuki'   ? 'flex' : 'none';
+    document.getElementById('status-preview').style.display = activeTab === 'status' ? 'flex' : 'none';
+    // update notice url
+    updateNoticeUrl();
+    generateCSS();
+  });
+});
+
+function updateNoticeUrl() {
+  const repoId = activeTab === 'chat' ? 'chat-repo' : activeTab === 'fuki' ? 'fuki-repo' : 'st-repo';
+  const file   = activeTab === 'chat' ? 'chat.css' : activeTab === 'fuki' ? 'fukidashi.css' : 'status.css';
+  const repo   = document.getElementById(repoId)?.value || '';
+  document.getElementById('notice-url').textContent = `${repo}/css/${file}`;
+}
+['chat-repo','fuki-repo','st-repo'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', () => { updateNoticeUrl(); generateCSS(); });
+});
+
+/* ── preview bg ── */
+document.querySelectorAll('.prev-bg-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.prev-bg-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const pa = document.getElementById('preview-area');
+    ['bg-dark','bg-mid','bg-light','bg-green'].forEach(c => pa.classList.remove(c));
+    pa.classList.add(btn.dataset.bg);
+  });
+});
+
+/* ── helpers ── */
+function v(id) { return document.getElementById(id)?.value ?? ''; }
+function n(id) { return +(document.getElementById(id)?.value ?? 0); }
+function hex2rgba(hex, alpha) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${(alpha/100).toFixed(2)})`;
+}
+function hex2rgbaA(hex, alphaInt) { return hex2rgba(hex, alphaInt); }
+
+/* ── range fill ── */
+function fillRange(el) {
+  const pct = ((el.value - el.min)/(el.max - el.min)*100).toFixed(1);
+  el.style.setProperty('--pct', pct+'%');
+}
+document.querySelectorAll('input[type=range]').forEach(r => { fillRange(r); r.addEventListener('input', () => fillRange(r)); });
+
+/* ── bind ── */
+function bindRange(id, valId, fmt) {
+  const el = document.getElementById(id), vel = document.getElementById(valId);
+  if (!el) return;
+  const upd = () => { if(vel) vel.textContent = fmt(el.value); generatePreview(); generateCSS(); };
+  el.addEventListener('input', upd); upd();
+}
+function bindColor(id, valId) {
+  const el = document.getElementById(id), vel = document.getElementById(valId);
+  if (!el) return;
+  const upd = () => { if(vel) vel.textContent = el.value; generatePreview(); generateCSS(); };
+  el.addEventListener('input', upd); upd();
+}
+function bindSel(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('change', () => { generatePreview(); generateCSS(); });
+}
+
+// chat
+bindColor('chat-bg-color','chat-bg-color-v');
+bindRange('chat-bg-alpha','chat-bg-alpha-v', x=>x+'%');
+['chat-g1','chat-g2','chat-g3'].forEach(id=>bindColor(id,null));
+bindRange('chat-grad-angle','chat-grad-angle-v',x=>x+'°');
+bindRange('chat-border-w','chat-border-w-v',x=>x+'px');
+bindRange('chat-radius','chat-radius-v',x=>x+'px');
+bindSel('chat-font');
+bindColor('chat-text-color','chat-text-color-v');
+bindRange('chat-text-size','chat-text-size-v',x=>x+'px');
+bindColor('chat-name-color','chat-name-color-v');
+bindRange('chat-name-size','chat-name-size-v',x=>x+'px');
+bindColor('chat-success','chat-success-v');
+bindColor('chat-fail','chat-fail-v');
+bindRange('chat-icon-sz','chat-icon-sz-v',x=>x+'px');
+bindSel('chat-icon-shape');
+bindRange('chat-icon-mr','chat-icon-mr-v',x=>x+'px');
+bindRange('chat-gap','chat-gap-v',x=>x+'px');
+bindRange('chat-show','chat-show-v',x=>x+(lang==='ja'?'件':'則'));
+bindRange('chat-anim','chat-anim-v',x=>x+'s');
+bindRange('chat-fadeout','chat-fadeout-v',x=>x+'s');
+
+// fuki
+bindSel('fuki-preset');
+document.getElementById('fuki-preset').addEventListener('change', applyFukiPreset);
+bindRange('fuki-icon-sz','fuki-icon-sz-v',x=>x+'px');
+bindColor('fuki-bubble-color','fuki-bubble-color-v');
+bindColor('fuki-border-color','fuki-border-color-v');
+bindRange('fuki-border-w','fuki-border-w-v',x=>x+'px');
+bindRange('fuki-radius','fuki-radius-v',x=>x+'px');
+bindRange('fuki-maxw','fuki-maxw-v',x=>x+'px');
+bindSel('fuki-font');
+bindColor('fuki-name-color','fuki-name-color-v');
+bindColor('fuki-body-color','fuki-body-color-v');
+bindRange('fuki-body-sz','fuki-body-sz-v',x=>x+'px');
+bindRange('fuki-anim','fuki-anim-v',x=>(x/1000).toFixed(1)+'s');
+
+// status
+bindColor('st-bg','st-bg-v');
+bindRange('st-bg-alpha','st-bg-alpha-v',x=>x+'%');
+bindColor('st-border','st-border-v');
+bindRange('st-border-alpha','st-border-alpha-v',x=>x+'%');
+bindRange('st-radius','st-radius-v',x=>x+'px');
+bindRange('st-av-sz','st-av-sz-v',x=>x+'px');
+bindSel('st-font');
+bindColor('st-name-color','st-name-color-v');
+bindRange('st-name-sz','st-name-sz-v',x=>x+'px');
+bindRange('st-bar-h','st-bar-h-v',x=>x+'px');
+['st-c1','st-c2','st-c3','st-c4','st-c5'].forEach((id,i)=>bindColor(id,id+'-v'));
+
+/* ── fuki preset ── */
+function applyFukiPreset() {
+  const ps = { dark:{bc:'#14092a',tc:'#e2d9f3',bdc:'#8b5cf6',nc:'#a78bfa'}, light:{bc:'#f0eeff',tc:'#1e1040',bdc:'#c4b5fd',nc:'#7c3aed'}, paper:{bc:'#faf3e0',tc:'#3d2b1f',bdc:'#c8a97a',nc:'#7a4a2a'}, neon:{bc:'#030312',tc:'#00ffcc',bdc:'#00ffcc',nc:'#ff00ff'} };
+  const p = ps[v('fuki-preset')]; if(!p) return;
+  const set = (id, val) => { const el=document.getElementById(id); if(el){el.value=val;} const vel=document.getElementById(id+'-v'); if(vel) vel.textContent=val; };
+  set('fuki-bubble-color',p.bc); set('fuki-border-color',p.bdc); set('fuki-body-color',p.tc); set('fuki-name-color',p.nc);
+  generatePreview(); generateCSS();
+}
+
+/* ── preview update ── */
+function generatePreview() {
+  if (activeTab==='chat')   updateChatPreview();
+  if (activeTab==='fuki')   updateFukiPreview();
+  if (activeTab==='status') updateStatusPreview();
+}
+
+function updateChatPreview() {
+  const bg    = hex2rgba(v('chat-bg-color'), n('chat-bg-alpha'));
+  const g1=v('chat-g1'), g2=v('chat-g2'), g3=v('chat-g3'), ang=n('chat-grad-angle'), bw=n('chat-border-w');
+  const r=n('chat-radius'), font=v('chat-font'), tc=v('chat-text-color'), ts=n('chat-text-size');
+  const nc=v('chat-name-color'), ns=n('chat-name-size'), sc=v('chat-success'), fc=v('chat-fail');
+  const isz=n('chat-icon-sz'), ish=v('chat-icon-shape'), gap=n('chat-gap');
+  document.getElementById('chat-preview').style.gap = gap+'px';
+  document.querySelectorAll('.p-chat-msg').forEach(m=>{
+    m.style.background = bg; m.style.borderRadius = r+'px';
+    m.style.fontFamily = font; m.style.color = tc; m.style.fontSize = ts+'px';
+    if(bw>0){ m.style.border=`${bw}px solid transparent`; m.style.borderImage=`linear-gradient(${ang}deg,${g1},${g2},${g3}) 1`; }
+    else { m.style.border='none'; }
+  });
+  document.querySelectorAll('.p-chat-av').forEach(a=>{ a.style.width=isz+'px'; a.style.height=isz+'px'; a.style.borderRadius=ish; a.style.fontSize=Math.round(isz*0.5)+'px'; });
+  document.querySelectorAll('.p-chat-name').forEach(e=>{ e.style.color=nc; e.style.fontSize=ns+'px'; e.style.fontFamily=font; });
+  document.getElementById('pd-s').style.cssText = `color:${sc};background:${sc}22;padding:2px 7px;border-radius:3px;`;
+  document.getElementById('pd-f').style.cssText = `color:${fc};background:${fc}22;padding:2px 7px;border-radius:3px;`;
+}
+
+function updateFukiPreview() {
+  const bc=v('fuki-bubble-color'), tc=v('fuki-body-color'), bdc=v('fuki-border-color');
+  const bw=n('fuki-border-w'), r=n('fuki-radius'), font=v('fuki-font');
+  const bs=n('fuki-body-sz'), nc=v('fuki-name-color'), isz=n('fuki-icon-sz');
+  document.querySelectorAll('.p-fuki-bubble').forEach(b=>{
+    b.style.background=bc; b.style.color=tc; b.style.border=`${bw}px solid ${bdc}`;
+    b.style.borderRadius=`4px ${r}px ${r}px ${r}px`; b.style.fontFamily=font; b.style.fontSize=bs+'px';
+  });
+  document.querySelectorAll('.p-fuki-name').forEach(e=>{ e.style.color=nc; e.style.fontFamily=font; });
+  document.querySelectorAll('.p-fuki-av').forEach(a=>{ a.style.width=isz+'px'; a.style.height=isz+'px'; a.style.fontSize=Math.round(isz*0.45)+'px'; });
+}
+
+function updateStatusPreview() {
+  const bg=hex2rgba(v('st-bg'),n('st-bg-alpha')), bc=hex2rgba(v('st-border'),n('st-border-alpha'));
+  const r=n('st-radius'), font=v('st-font'), nc=v('st-name-color'), ns=n('st-name-sz');
+  const bh=n('st-bar-h'), avSz=n('st-av-sz');
+  const colors=[v('st-c1'),v('st-c2'),v('st-c3'),v('st-c4'),v('st-c5')];
+  document.querySelectorAll('.p-st-card').forEach(c=>{ c.style.background=bg; c.style.border=`1px solid ${bc}`; c.style.borderRadius=r+'px'; c.style.fontFamily=font; });
+  document.querySelectorAll('.p-st-name').forEach(e=>{ e.style.color=nc; e.style.fontSize=ns+'px'; });
+  document.querySelectorAll('.p-st-av').forEach(a=>{ a.style.width=avSz+'px'; a.style.height=avSz+'px'; a.style.fontSize=Math.round(avSz*0.45)+'px'; });
+  document.querySelectorAll('.p-st-track').forEach(t=>{ t.style.height=bh+'px'; t.style.borderRadius=(bh/2)+'px'; });
+  document.querySelectorAll('.p-st-fill').forEach((f,i)=>{ f.style.height=bh+'px'; f.style.borderRadius=(bh/2)+'px'; f.style.background=colors[i%5]; });
+}
+
+/* ── CSS generation ── */
+function generateCSS() {
+  let css = '';
+
+  if (activeTab === 'chat') {
+    const repo   = v('chat-repo');
+    const bg     = hex2rgba(v('chat-bg-color'), n('chat-bg-alpha'));
+    const g1=v('chat-g1'), g2=v('chat-g2'), g3=v('chat-g3'), ang=n('chat-grad-angle');
+    const bw=n('chat-border-w'), r=n('chat-radius');
+    const font=v('chat-font'), tc=v('chat-text-color'), ts=n('chat-text-size');
+    const nc=v('chat-name-color'), ns=n('chat-name-size');
+    const sc=v('chat-success'), fc=v('chat-fail');
+    const isz=n('chat-icon-sz'), ish=v('chat-icon-shape'), imr=n('chat-icon-mr');
+    const gap=n('chat-gap'), show=n('chat-show'), anim=n('chat-anim'), fadeout=n('chat-fadeout');
+
+    css =
+`@import url("${repo}/css/chat.css");
+
+/* ── フォント ── */
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Zen+Old+Mincho:wght@400;700&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Serif+TC:wght@300;400;600&display=swap');
+
+:root {
+  /* 背景 */
+  --background-color: ${bg};
+  --background-padding: 8px 12px;
+
+  /* 外框 */
+  --border-width: ${bw}px;
+  --border-image: linear-gradient(${ang}deg, ${g1}, ${g2}, ${g3}) 1;
+  --border-slice: 1;
+  --border-color: transparent;
+  --border-radius: ${r}px;
+
+  /* カード */
+  --result-space: ${gap}px;
+
+  /* アイコン */
+  --icon-width: ${isz}px;
+  --icon-height: ${isz}px;
+  --icon-radius: ${ish};
+  --icon-margin-right: ${imr}px;
+
+  /* テキスト */
+  --font-family: ${font};
+  --font-size-result: ${ts}px;
+  --font-color-result: ${tc};
+  --font-size-user-name: ${ns}px;
+  --font-color-user-name: ${nc};
+  --font-color-success: ${sc};
+  --font-color-fail: ${fc};
+
+  /* アニメーション */
+  --anim-duration: ${anim}s;
+  --fadeout-sec: ${fadeout}s;
+}
+
+/* 表示件数：最新 ${show} 件 */
+.MuiList-root > div > div > div:nth-last-child(-n+${show}) { display: block !important; }`;
+  }
+
+  else if (activeTab === 'fuki') {
+    const repo   = v('fuki-repo');
+    const bc=v('fuki-bubble-color'), tc=v('fuki-body-color'), bdc=v('fuki-border-color');
+    const bw=n('fuki-border-w'), r=n('fuki-radius'), maxw=n('fuki-maxw');
+    const font=v('fuki-font'), nc=v('fuki-name-color'), bs=n('fuki-body-sz');
+    const isz=n('fuki-icon-sz'), animMs=n('fuki-anim');
+
+    css =
+`@import url("${repo}/css/fukidashi.css");
+
+/* ── フォント ── */
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Zen+Old+Mincho:wght@400;700&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Serif+TC:wght@300;400;600&display=swap');
+
+:root {
+  /* アイコン */
+  --icon-width: ${isz}px;
+  --icon-height: ${isz}px;
+
+  /* 吹き出し本体 */
+  --bubble-color: ${bc};
+  --bubble-border-color: ${bdc};
+  --bubble-border-width: ${bw}px;
+  --bubble-border-radius: 4px ${r}px ${r}px ${r}px;
+  --bubble-max-width: ${maxw}px;
+
+  /* テキスト */
+  --font-family: ${font};
+  --font-size-name: ${Math.round(bs*0.85)}px;
+  --font-color-name: ${nc};
+  --font-size-body: ${bs}px;
+  --font-color-body: ${tc};
+
+  /* アニメーション */
+  --anim-duration: ${(animMs/1000).toFixed(2)}s;
+}`;
+  }
+
+  else if (activeTab === 'status') {
+    const repo    = v('st-repo');
+    const bg      = hex2rgba(v('st-bg'), n('st-bg-alpha'));
+    const bc      = hex2rgba(v('st-border'), n('st-border-alpha'));
+    const r       = n('st-radius'), avSz=n('st-av-sz');
+    const font    = v('st-font'), nc=v('st-name-color'), ns=n('st-name-sz');
+    const bh      = n('st-bar-h');
+    const c1=v('st-c1'), c2=v('st-c2'), c3=v('st-c3'), c4=v('st-c4'), c5=v('st-c5');
+
+    css =
+`@import url("${repo}/css/status.css");
+
+/* ── フォント ── */
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Zen+Old+Mincho:wght@400;700&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Serif+TC:wght@300;400;600&display=swap');
+
+:root {
+  /* カード */
+  --card-bg: ${bg};
+  --card-border-color: ${bc};
+  --card-border-radius: ${r}px;
+
+  /* アバター */
+  --avatar-size: ${avSz}px;
+
+  /* テキスト */
+  --font-family: ${font};
+  --font-size-name: ${ns}px;
+  --font-color-name: ${nc};
+
+  /* バー */
+  --bar-height: ${bh}px;
+  --bar-radius: ${Math.round(bh/2)}px;
+  --bar-color-1: ${c1};
+  --bar-color-2: ${c2};
+  --bar-color-3: ${c3};
+  --bar-color-4: ${c4};
+  --bar-color-5: ${c5};
+}`;
+  }
+
+  document.getElementById('css-output').value = css;
+}
+
+/* ── copy ── */
+document.getElementById('copy-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('css-output').value).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.textContent = lang==='ja' ? 'コピー済み！' : '已複製！';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = I18N[lang]['btn-copy']; }, 2000);
+  });
+});
+
+/* ── init ── */
+applyLang();
+updateNoticeUrl();
+generatePreview();
+generateCSS();
+</script>
+</body>
+</html>
