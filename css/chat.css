@@ -1,0 +1,294 @@
+/**
+ * ccfolia-obs / chat.css
+ * ルームチャット（チャットログ）用ベースCSS
+ * GitHub Pages で公開して @import で読み込む
+ *
+ * 使い方：
+ *   @import url("https://YOUR_NAME.github.io/YOUR_REPO/css/chat.css");
+ *   :root { --background-color: rgba(0,0,0,0.7); ... }
+ */
+
+/* ════════════════════════════════════════
+   デフォルト変数
+════════════════════════════════════════ */
+:root {
+  /* 表示件数（エディターで上書き） */
+  --show-count: 3;
+
+  /* カード背景 */
+  --background-color: rgba(0, 0, 0, 0.6);
+  --background-padding: 8px 12px 8px 12px;
+
+  /* 外框 */
+  --border-color: rgba(255, 255, 255, 0.6);
+  --border-image: none;
+  --border-slice: 1;
+  --border-width: 0px;
+  --border-radius: 10px;
+  --border-shadow: none;
+
+  /* カード間隔・幅 */
+  --result-space: 4px;
+  --width: auto;
+
+  /* アイコン */
+  --icon-radius: 50%;
+  --icon-background-color: transparent;
+  --icon-width: 36px;
+  --icon-height: 36px;
+  --icon-margin-top: 0px;
+  --icon-margin-bottom: 0px;
+  --icon-margin-left: 0px;
+  --icon-margin-right: 8px;
+
+  /* 本文テキスト */
+  --font-family: 'Noto Serif JP', serif;
+  --font-size-result: 1.125rem;
+  --font-color-result: rgba(255, 255, 255, 1);
+  --font-shadow-result: 0px 1px 4px rgba(0, 0, 0, 0.9);
+  --line-clamp: auto;
+
+  /* 成功テキスト */
+  --font-size-success: 1.125rem;
+  --font-color-success: rgba(134, 202, 255, 1);
+  --font-shadow-success: 0px 1px 4px rgba(0, 0, 0, 0.9);
+
+  /* 失敗テキスト */
+  --font-size-fail: 1.125rem;
+  --font-color-fail: rgba(255, 161, 161, 1);
+  --font-shadow-fail: 0px 1px 4px rgba(0, 0, 0, 0.9);
+
+  /* ユーザ名 */
+  --font-size-user-name: 1rem;
+  --font-color-user-name: rgba(255, 255, 255, 1);
+  --font-shadow-user-name: 0px 1px 4px rgba(0, 0, 0, 0.9);
+
+  /* 時刻表示 */
+  --disp-dice-time: none;
+  --font-size-dice-time: 0.875rem;
+  --font-color-dice-time: rgba(255, 255, 255, 0.5);
+  --font-shadow-dice-time: 0px 1px 3px rgba(0, 0, 0, 0.8);
+
+  /* 上下揃え */
+  --is-top: auto;
+  --is-bottom: 0;
+
+  /* アニメーション */
+  --anim-duration: 8s;
+  --fadeout-sec: 5s;
+}
+
+/* ════════════════════════════════════════
+   OBS 用おまじない
+════════════════════════════════════════ */
+body {
+  background-color: rgba(0, 0, 0, 0) !important;
+  margin: 0px auto !important;
+  overflow: hidden !important;
+}
+
+/* ════════════════════════════════════════
+   非表示要素
+════════════════════════════════════════ */
+.MuiToolbar-regular,
+.MuiPaper-elevation1,
+.MuiPaper-root > form,
+#root > div > div:nth-child(2),
+#root > div > div:nth-child(3),
+.MuiSnackbar-root,
+.MuiDialog-root {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   右側全体
+════════════════════════════════════════ */
+.MuiDrawer-root > .MuiPaper-root {
+  width: 100% !important;
+}
+
+.MuiPaper-root {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+hr {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   チャットリスト レイアウト
+════════════════════════════════════════ */
+.MuiList-root > div {
+  height: 100% !important;
+}
+
+.MuiList-root > div > div {
+  position: absolute !important;
+  top: var(--is-top) !important;
+  bottom: var(--is-bottom) !important;
+}
+
+/* ════════════════════════════════════════
+   チャットカード（全件非表示→変数で制御）
+════════════════════════════════════════ */
+.MuiList-root > div > div > div {
+  display: none;
+  padding: var(--background-padding) !important;
+  background: var(--background-color) !important;
+  border: solid var(--border-width) var(--border-color) !important;
+  border-radius: var(--border-radius) !important;
+  border-image-source: var(--border-image) !important;
+  border-image-slice: var(--border-slice) !important;
+  box-shadow: var(--border-shadow) !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  width: var(--width) !important;
+  height: auto !important;
+  min-height: auto !important;
+  margin: var(--result-space) !important;
+  position: relative !important;
+  top: 0 !important;
+  flex-shrink: 0 !important;
+
+  /* アニメーション */
+  animation-name: ccfolia-chat-slide;
+  animation-duration: var(--anim-duration);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+}
+
+/* 最新N件を表示（--show-countはCSSカスタムプロパティ未対応のため
+   エディターが :nth-last-child セレクタを直接生成します） */
+.MuiList-root > div > div > div:nth-last-child(-n+3) {
+  display: block !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+/* ════════════════════════════════════════
+   アイコン
+════════════════════════════════════════ */
+.MuiListItemAvatar-root {
+  min-width: unset !important;
+  margin-top: var(--icon-margin-top) !important;
+  margin-bottom: var(--icon-margin-bottom) !important;
+  margin-left: var(--icon-margin-left) !important;
+  margin-right: var(--icon-margin-right) !important;
+  position: relative !important;
+  z-index: 1 !important;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--icon-radius);
+}
+
+.MuiListItemAvatar-root > div {
+  width: var(--icon-width) !important;
+  height: var(--icon-height) !important;
+  background: var(--icon-background-color) !important;
+  border-radius: var(--icon-radius) !important;
+}
+
+.MuiListItemAvatar-root img {
+  width: var(--icon-width) !important;
+  position: relative !important;
+  top: 0px !important;
+}
+
+/* ════════════════════════════════════════
+   テキスト
+════════════════════════════════════════ */
+.MuiListItemText-root {
+  overflow: hidden !important;
+  z-index: -1 !important;
+}
+
+.MuiListItem-root {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  overflow: visible !important;
+}
+
+/* 本文 */
+p.MuiTypography-root {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: var(--line-clamp) !important;
+  font-family: var(--font-family) !important;
+  color: var(--font-color-result) !important;
+  text-shadow: var(--font-shadow-result) !important;
+  font-size: var(--font-size-result) !important;
+}
+
+/* 成功 */
+.MuiTypography-colorPrimary,
+.css-1l6qhgm {
+  color: var(--font-color-success) !important;
+  text-shadow: var(--font-shadow-success) !important;
+  font-size: var(--font-size-success) !important;
+  font-weight: bold !important;
+}
+
+/* 失敗 */
+.MuiTypography-colorSecondary,
+.css-1j13mke {
+  color: var(--font-color-fail) !important;
+  text-shadow: var(--font-shadow-fail) !important;
+  font-size: var(--font-size-fail) !important;
+  font-weight: bold !important;
+}
+
+/* 通常ダイス結果テキスト */
+.MuiTypography-colorTextSecondary,
+.css-ucj12 {
+  font-size: inherit !important;
+  font-weight: bold !important;
+}
+
+/* ユーザ名 */
+.MuiListItemText-primary,
+.MuiTypography-caption {
+  font-family: var(--font-family) !important;
+  text-shadow: var(--font-shadow-user-name) !important;
+  font-size: var(--font-size-user-name) !important;
+}
+
+/* ユーザ名をアイコン背景色として転用 */
+.MuiListItemText-primary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  z-index: -1;
+  border-radius: 999px;
+  width: var(--icon-width);
+  height: var(--icon-height);
+}
+
+.MuiListItemText-primary::before {
+  width: var(--icon-width);
+  height: var(--icon-height);
+  content: "";
+  display: block;
+  background-color: currentcolor;
+  border-radius: 999px;
+}
+
+/* 時刻 */
+span.MuiTypography-root.MuiTypography-caption {
+  display: var(--disp-dice-time) !important;
+  color: var(--font-color-dice-time) !important;
+  text-shadow: var(--font-shadow-dice-time) !important;
+  font-size: var(--font-size-dice-time) !important;
+}
+
+/* ════════════════════════════════════════
+   アニメーション
+════════════════════════════════════════ */
+@keyframes ccfolia-chat-slide {
+  0%   { opacity: 0; transform: translateY(30px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(0); }
+}
