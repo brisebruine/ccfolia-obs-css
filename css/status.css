@@ -151,11 +151,16 @@ div[tabindex="0"] [variant="bar"] {
   margin: 3px 0 !important;
 }
 
-/* バーラベル */
+/* バーラベル（「HP」「体力」など） */
 div[tabindex="0"] [variant="bar"] + span,
 div[tabindex="0"] .MuiTypography-caption {
   font-size: var(--font-size-body) !important;
   color: var(--bar-label-color) !important;
+}
+
+/* バー数値（「9/12」など） */
+div[tabindex="0"] [variant="bar"] ~ span:last-child {
+  color: var(--bar-val-color) !important;
 }
 
 /* ════════════════════════════════════════
