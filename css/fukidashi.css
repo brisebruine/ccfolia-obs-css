@@ -1,0 +1,245 @@
+/**
+ * ccfolia-obs / fukidashi.css
+ * 吹き出し（キャラクター対話）用ベースCSS
+ * GitHub Pages で公開して @import で読み込む
+ *
+ * 使い方：
+ *   @import url("https://YOUR_NAME.github.io/YOUR_REPO/css/fukidashi.css");
+ *   :root { --bubble-color: rgba(20,15,40,0.9); ... }
+ */
+
+/* ════════════════════════════════════════
+   デフォルト変数
+════════════════════════════════════════ */
+:root {
+  /* アイコン */
+  --icon-width: 56px;
+  --icon-height: 56px;
+  --icon-radius: 50%;
+  --icon-border-color: rgba(255, 255, 255, 0.3);
+  --icon-border-width: 2px;
+
+  /* 吹き出し本体 */
+  --bubble-color: rgba(20, 15, 40, 0.88);
+  --bubble-border-color: rgba(139, 92, 246, 0.7);
+  --bubble-border-width: 1.5px;
+  --bubble-border-radius: 4px 16px 16px 16px;
+  --bubble-padding: 8px 14px;
+  --bubble-max-width: 340px;
+  --bubble-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  --bubble-gap: 8px;
+
+  /* キャラ名 */
+  --font-family: 'Noto Serif JP', serif;
+  --font-size-name: 0.9rem;
+  --font-color-name: rgba(167, 139, 250, 1);
+  --font-shadow-name: 0px 1px 4px rgba(0, 0, 0, 0.8);
+
+  /* 本文 */
+  --font-size-body: 1rem;
+  --font-color-body: rgba(226, 217, 243, 1);
+  --font-shadow-body: 0px 1px 3px rgba(0, 0, 0, 0.7);
+  --line-height-body: 1.65;
+
+  /* 成功・失敗 */
+  --font-color-success: rgba(134, 202, 255, 1);
+  --font-color-fail: rgba(255, 161, 161, 1);
+
+  /* アニメーション */
+  --anim-duration: 0.4s;
+
+  /* 上下揃え */
+  --is-top: auto;
+  --is-bottom: 0;
+}
+
+/* ════════════════════════════════════════
+   OBS 用おまじない
+════════════════════════════════════════ */
+body {
+  background-color: rgba(0, 0, 0, 0) !important;
+  margin: 0px auto !important;
+  overflow: hidden !important;
+}
+
+/* ════════════════════════════════════════
+   非表示要素
+════════════════════════════════════════ */
+.MuiToolbar-regular,
+.MuiPaper-elevation1,
+.MuiPaper-root > form,
+#root > div > div:nth-child(2),
+#root > div > div:nth-child(3),
+.MuiSnackbar-root,
+.MuiDialog-root {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   右側全体
+════════════════════════════════════════ */
+.MuiDrawer-root > .MuiPaper-root {
+  width: 100% !important;
+}
+
+.MuiPaper-root {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+hr {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   リストレイアウト
+════════════════════════════════════════ */
+.MuiList-root > div {
+  height: 100% !important;
+}
+
+.MuiList-root > div > div {
+  position: absolute !important;
+  top: var(--is-top) !important;
+  bottom: var(--is-bottom) !important;
+}
+
+/* 全件非表示 → 最新1件だけ表示 */
+.MuiList-root > div > div > div {
+  display: none;
+  box-shadow: none !important;
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 2px 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: auto !important;
+  position: relative !important;
+  top: 0 !important;
+  flex-shrink: 0 !important;
+  align-items: flex-end !important;
+
+  animation-name: fuki-appear;
+  animation-duration: var(--anim-duration);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+}
+
+.MuiList-root > div > div > div:nth-last-child(-n+1) {
+  display: flex !important;
+}
+
+/* ════════════════════════════════════════
+   アイコン
+════════════════════════════════════════ */
+.MuiListItemAvatar-root {
+  min-width: unset !important;
+  margin: 0 !important;
+  align-self: flex-end !important;
+  flex-shrink: 0 !important;
+}
+
+.MuiListItemAvatar-root > div {
+  width: var(--icon-width) !important;
+  height: var(--icon-height) !important;
+  border-radius: var(--icon-radius) !important;
+  border: var(--icon-border-width) solid var(--icon-border-color) !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+.MuiListItemAvatar-root img {
+  width: var(--icon-width) !important;
+}
+
+/* ════════════════════════════════════════
+   吹き出し本体
+════════════════════════════════════════ */
+.MuiListItem-root {
+  padding: 0 !important;
+  overflow: visible !important;
+  align-items: flex-end !important;
+}
+
+.MuiListItemText-root {
+  background: var(--bubble-color) !important;
+  border: var(--bubble-border-width) solid var(--bubble-border-color) !important;
+  border-radius: var(--bubble-border-radius) !important;
+  padding: var(--bubble-padding) !important;
+  margin-left: var(--bubble-gap) !important;
+  margin-top: 0 !important;
+  max-width: var(--bubble-max-width) !important;
+  box-shadow: var(--bubble-shadow) !important;
+  overflow: visible !important;
+}
+
+/* ════════════════════════════════════════
+   キャラ名（MuiListItemText-primary を上書き）
+════════════════════════════════════════ */
+.MuiListItemText-primary {
+  /* 元CSSのアイコン背景転用を無効化 */
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  background: none !important;
+  border-radius: 0 !important;
+  z-index: auto !important;
+  display: block !important;
+
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-name) !important;
+  color: var(--font-color-name) !important;
+  text-shadow: var(--font-shadow-name) !important;
+  font-weight: 600 !important;
+  margin-bottom: 4px !important;
+  line-height: 1.3 !important;
+}
+
+.MuiListItemText-primary::before {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   本文
+════════════════════════════════════════ */
+p.MuiTypography-root {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-body) !important;
+  color: var(--font-color-body) !important;
+  text-shadow: var(--font-shadow-body) !important;
+  line-height: var(--line-height-body) !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+}
+
+/* 成功・失敗 */
+.MuiTypography-colorPrimary,
+.css-1l6qhgm {
+  color: var(--font-color-success) !important;
+  font-weight: bold !important;
+}
+
+.MuiTypography-colorSecondary,
+.css-1j13mke {
+  color: var(--font-color-fail) !important;
+  font-weight: bold !important;
+}
+
+.css-ucj12 {
+  color: var(--font-color-body) !important;
+  font-weight: bold !important;
+}
+
+/* 時刻は常に非表示 */
+span.MuiTypography-root.MuiTypography-caption {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   アニメーション
+════════════════════════════════════════ */
+@keyframes fuki-appear {
+  0%   { opacity: 0; transform: scale(0.92) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
