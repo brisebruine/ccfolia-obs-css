@@ -1,0 +1,188 @@
+/**
+ * ccfolia-obs / status.css
+ * ステータス（HP/MP/SANバー）用ベースCSS
+ * GitHub Pages で公開して @import で読み込む
+ *
+ * 使い方：
+ *   @import url("https://YOUR_NAME.github.io/YOUR_REPO/css/status.css");
+ *   :root { --card-bg: rgba(10,8,22,0.88); ... }
+ */
+
+/* ════════════════════════════════════════
+   デフォルト変数
+════════════════════════════════════════ */
+:root {
+  /* カード */
+  --card-bg: rgba(10, 8, 22, 0.88);
+  --card-border-color: rgba(139, 92, 246, 0.4);
+  --card-border-width: 1px;
+  --card-border-radius: 10px;
+  --card-padding: 10px 12px;
+  --card-gap: 6px;
+
+  /* アバター */
+  --avatar-size: 44px;
+  --avatar-radius: 50%;
+  --avatar-border-color: rgba(139, 92, 246, 0.5);
+  --avatar-border-width: 2px;
+
+  /* 字体 */
+  --font-family: 'Noto Serif JP', serif;
+
+  /* キャラ名 */
+  --font-size-name: 0.95rem;
+  --font-color-name: rgba(196, 181, 253, 1);
+  --font-shadow-name: 0px 1px 4px rgba(0, 0, 0, 0.8);
+
+  /* テキスト全般 */
+  --font-size-body: 0.8rem;
+  --font-color-body: rgba(226, 217, 243, 0.85);
+
+  /* バー */
+  --bar-height: 8px;
+  --bar-radius: 4px;
+  --bar-track-color: rgba(255, 255, 255, 0.08);
+  --bar-label-color: rgba(226, 217, 243, 0.6);
+  --bar-val-color: rgba(226, 217, 243, 0.7);
+
+  /* バー色（種別ごと） */
+  --bar-color-1: #34d399;  /* HP */
+  --bar-color-2: #60a5fa;  /* MP */
+  --bar-color-3: #f59e0b;  /* SAN */
+  --bar-color-4: #a78bfa;  /* その他① */
+  --bar-color-5: #f472b6;  /* その他② */
+
+  /* バッジ */
+  --badge-bg: rgba(139, 92, 246, 0.8);
+  --badge-color: #ffffff;
+}
+
+/* ════════════════════════════════════════
+   OBS 用おまじない
+════════════════════════════════════════ */
+body {
+  background-color: rgba(0, 0, 0, 0) !important;
+  margin: 0px auto !important;
+  overflow: hidden !important;
+}
+
+/* ════════════════════════════════════════
+   非表示要素
+════════════════════════════════════════ */
+.MuiToolbar-regular,
+.MuiPaper-elevation1,
+.MuiPaper-root > form,
+#root > div > div:nth-child(2),
+#root > div > div:nth-child(3),
+.MuiSnackbar-root,
+.MuiDialog-root {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════
+   全体背景
+════════════════════════════════════════ */
+.MuiPaper-root {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+/* ════════════════════════════════════════
+   ステータスカード
+════════════════════════════════════════ */
+div[tabindex="0"] {
+  background: var(--card-bg) !important;
+  border: var(--card-border-width) solid var(--card-border-color) !important;
+  border-radius: var(--card-border-radius) !important;
+  padding: var(--card-padding) !important;
+  margin-bottom: var(--card-gap) !important;
+  font-family: var(--font-family) !important;
+  color: var(--font-color-body) !important;
+  box-sizing: border-box !important;
+}
+
+/* ステータス内部レイアウト（アバター＋情報を横並び） */
+div[tabindex="0"] > div > div:nth-child(2) {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+
+/* ════════════════════════════════════════
+   アバター
+════════════════════════════════════════ */
+div[tabindex="0"] .MuiAvatar-root {
+  width: var(--avatar-size) !important;
+  height: var(--avatar-size) !important;
+  border-radius: var(--avatar-radius) !important;
+  border: var(--avatar-border-width) solid var(--avatar-border-color) !important;
+  flex-shrink: 0 !important;
+}
+
+/* ════════════════════════════════════════
+   キャラ名
+════════════════════════════════════════ */
+div[tabindex="0"] .MuiTypography-subtitle2,
+div[tabindex="0"] h6 {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-name) !important;
+  color: var(--font-color-name) !important;
+  font-weight: 600 !important;
+  text-shadow: var(--font-shadow-name) !important;
+  margin-bottom: 6px !important;
+}
+
+/* ════════════════════════════════════════
+   テキスト全般
+════════════════════════════════════════ */
+div[tabindex="0"] .MuiTypography-root {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-body) !important;
+  color: var(--font-color-body) !important;
+}
+
+/* ════════════════════════════════════════
+   ステータスバー トラック
+════════════════════════════════════════ */
+div[tabindex="0"] [variant="bar"] {
+  height: var(--bar-height) !important;
+  border-radius: var(--bar-radius) !important;
+  background: var(--bar-track-color) !important;
+  overflow: hidden !important;
+  margin: 3px 0 !important;
+}
+
+/* バーラベル */
+div[tabindex="0"] [variant="bar"] + span,
+div[tabindex="0"] .MuiTypography-caption {
+  font-size: var(--font-size-body) !important;
+  color: var(--bar-label-color) !important;
+}
+
+/* ════════════════════════════════════════
+   バー色（1〜5番目）
+   ※ OBSでは nth-of-type が確実に効かない場合があるため
+      nth-child と両方指定しています
+════════════════════════════════════════ */
+div[tabindex="0"] [variant="bar"]:nth-of-type(1) > div,
+div[tabindex="0"] [variant="bar"]:nth-child(1) > div  { background: var(--bar-color-1) !important; }
+
+div[tabindex="0"] [variant="bar"]:nth-of-type(2) > div,
+div[tabindex="0"] [variant="bar"]:nth-child(2) > div  { background: var(--bar-color-2) !important; }
+
+div[tabindex="0"] [variant="bar"]:nth-of-type(3) > div,
+div[tabindex="0"] [variant="bar"]:nth-child(3) > div  { background: var(--bar-color-3) !important; }
+
+div[tabindex="0"] [variant="bar"]:nth-of-type(4) > div,
+div[tabindex="0"] [variant="bar"]:nth-child(4) > div  { background: var(--bar-color-4) !important; }
+
+div[tabindex="0"] [variant="bar"]:nth-of-type(5) > div,
+div[tabindex="0"] [variant="bar"]:nth-child(5) > div  { background: var(--bar-color-5) !important; }
+
+/* ════════════════════════════════════════
+   バッジ
+════════════════════════════════════════ */
+div[tabindex="0"] .MuiBadge-badge {
+  background: var(--badge-bg) !important;
+  color: var(--badge-color) !important;
+  font-family: var(--font-family) !important;
+}
