@@ -1,10 +1,9 @@
 /**
  * ccfolia-obs / fukidashi.css
  * 吹き出し（キャラクター対話）用ベースCSS
- * GitHub Pages で公開して @import で読み込む
  *
  * 使い方：
- *   @import url("https://YOUR_NAME.github.io/YOUR_REPO/css/fukidashi.css");
+ *   @import url("https://brisebruine.github.io/ccfolia-obs-css/css/fukidashi.css");
  *   :root { --bubble-color: rgba(20,15,40,0.9); ... }
  */
 
@@ -18,6 +17,14 @@
   --icon-radius: 50%;
   --icon-border-color: rgba(255, 255, 255, 0.3);
   --icon-border-width: 2px;
+  /* アイコン画像のクロップ設定 */
+  --icon-object-fit: cover;
+  --icon-object-position: center;
+
+  /* キャラ名色をアイコン背景に転用するか */
+  /* 1 = 転用する（CCFOLIAのキャラ名色がアイコン背景になる） */
+  /* 0 = 転用しない（背景なし） */
+  --icon-use-name-color: 1;
 
   /* 吹き出し本体 */
   --bubble-color: rgba(20, 15, 40, 0.88);
@@ -48,6 +55,9 @@
   /* アニメーション */
   --anim-duration: 0.4s;
 
+  /* 骰子アニメーション表示: block = 表示 / none = 非表示 */
+  --disp-dice-anim: none;
+
   /* 上下揃え */
   --is-top: auto;
   --is-bottom: 0;
@@ -70,32 +80,26 @@ body {
 .MuiPaper-root > form,
 #root > div > div:nth-child(2),
 #root > div > div:nth-child(3),
-.MuiSnackbar-root,
 .MuiDialog-root {
   display: none !important;
+}
+
+/* 骰子アニメーション（変数で切替） */
+.MuiSnackbar-root {
+  display: var(--disp-dice-anim) !important;
 }
 
 /* ════════════════════════════════════════
    右側全体
 ════════════════════════════════════════ */
-.MuiDrawer-root > .MuiPaper-root {
-  width: 100% !important;
-}
-
-.MuiPaper-root {
-  background-color: rgba(0, 0, 0, 0) !important;
-}
-
-hr {
-  display: none !important;
-}
+.MuiDrawer-root > .MuiPaper-root { width: 100% !important; }
+.MuiPaper-root { background-color: rgba(0, 0, 0, 0) !important; }
+hr { display: none !important; }
 
 /* ════════════════════════════════════════
    リストレイアウト
 ════════════════════════════════════════ */
-.MuiList-root > div {
-  height: 100% !important;
-}
+.MuiList-root > div { height: 100% !important; }
 
 .MuiList-root > div > div {
   position: absolute !important;
@@ -118,7 +122,6 @@ hr {
   top: 0 !important;
   flex-shrink: 0 !important;
   align-items: flex-end !important;
-
   animation-name: fuki-appear;
   animation-duration: var(--anim-duration);
   animation-fill-mode: forwards;
@@ -138,6 +141,7 @@ hr {
   margin: 0 !important;
   align-self: flex-end !important;
   flex-shrink: 0 !important;
+  position: relative !important;
 }
 
 .MuiListItemAvatar-root > div {
@@ -145,12 +149,32 @@ hr {
   height: var(--icon-height) !important;
   border-radius: var(--icon-radius) !important;
   border: var(--icon-border-width) solid var(--icon-border-color) !important;
-  background: transparent !important;
   overflow: hidden !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* キャラ名色をアイコン背景に転用する疑似要素 */
+/* currentcolor = CCFOLIAのキャラ設定色を自動参照 */
+.MuiListItemAvatar-root > div::before {
+  content: "";
+  position: absolute !important;
+  inset: 0 !important;
+  background-color: currentcolor !important;
+  /* --icon-use-name-color: 1 なら表示、0 なら透明 */
+  opacity: var(--icon-use-name-color) !important;
+  z-index: 0 !important;
 }
 
 .MuiListItemAvatar-root img {
   width: var(--icon-width) !important;
+  height: var(--icon-height) !important;
+  object-fit: var(--icon-object-fit) !important;
+  object-position: var(--icon-object-position) !important;
+  position: relative !important;
+  z-index: 1 !important;
+  flex-shrink: 0 !important;
 }
 
 /* ════════════════════════════════════════
@@ -175,10 +199,9 @@ hr {
 }
 
 /* ════════════════════════════════════════
-   キャラ名（MuiListItemText-primary を上書き）
+   キャラ名
 ════════════════════════════════════════ */
 .MuiListItemText-primary {
-  /* 元CSSのアイコン背景転用を無効化 */
   position: static !important;
   width: auto !important;
   height: auto !important;
@@ -186,7 +209,6 @@ hr {
   border-radius: 0 !important;
   z-index: auto !important;
   display: block !important;
-
   font-family: var(--font-family) !important;
   font-size: var(--font-size-name) !important;
   color: var(--font-color-name) !important;
@@ -213,15 +235,12 @@ p.MuiTypography-root {
   -webkit-line-clamp: unset !important;
 }
 
-/* 成功・失敗 */
-.MuiTypography-colorPrimary,
-.css-1l6qhgm {
+.MuiTypography-colorPrimary, .css-1l6qhgm {
   color: var(--font-color-success) !important;
   font-weight: bold !important;
 }
 
-.MuiTypography-colorSecondary,
-.css-1j13mke {
+.MuiTypography-colorSecondary, .css-1j13mke {
   color: var(--font-color-fail) !important;
   font-weight: bold !important;
 }
@@ -231,7 +250,6 @@ p.MuiTypography-root {
   font-weight: bold !important;
 }
 
-/* 時刻は常に非表示 */
 span.MuiTypography-root.MuiTypography-caption {
   display: none !important;
 }
